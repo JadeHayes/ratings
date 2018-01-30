@@ -121,3 +121,4 @@ if __name__ == "__main__":
     load_movies()
     load_ratings()
     set_val_user_id()
+
