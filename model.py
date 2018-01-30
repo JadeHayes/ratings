@@ -1,6 +1,7 @@
 """Models and database functions for Ratings project."""
 
 from flask_sqlalchemy import SQLAlchemy
+import datetime
 
 # This is the connection to the PostgreSQL database; we're getting this through
 # the Flask-SQLAlchemy helper library. On this, we can find the `session`
@@ -15,12 +16,6 @@ db = SQLAlchemy()
 class User(db.Model):
     """User of ratings website."""
 
-    def __repr__(self):
-        """Provide helpful representation when printed."""
-
-        return "<User user_id={} email={}>".format(self.user_id,
-                                               self.email)
-
     __tablename__ = "users"
 
     user_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
@@ -29,22 +24,36 @@ class User(db.Model):
     age = db.Column(db.Integer, nullable=True)
     zipcode = db.Column(db.String(15), nullable=True)
 
+    def __repr__(self):
+        """Provide helpful representation when printed."""
+
+        return "<User user_id={} email={}>".format(self.user_id,
+                                               self.email)
+
 # Put your Movie and Rating model classes here.
 
 
 class Movie(db.Model):
     """Movie information."""
 
+
     __tablename__ = "movies"
 
     movie_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    title = db.Column(db.String(64), nullable=False)
+    title = db.Column(db.String(150), nullable=False)
     released_at = db.Column(db.DateTime)
     imdb_url = db.Column(db.String(150))
+
+    def __repr__(self):
+        """Provide helpful representation when printed."""
+
+        return "<Movie_id={} title={}>".format(self.movie_id, self.title)
+
 
 
 class Rating(db.Model):
     """Rating information."""
+
 
     __tablename__ = "ratings"
 
@@ -53,6 +62,11 @@ class Rating(db.Model):
     user_id = db.Column(db.Integer, nullable=False)
     score = db.Column(db.Integer, nullable=False)
 
+    def __repr__(self):
+        """Provide helpful representation when printed."""
+
+        return "<rating_id={} sore={}>".format(self.rating_id,
+                                               self.score)
 
 ##############################################################################
 # Helper functions
