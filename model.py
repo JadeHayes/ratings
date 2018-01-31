@@ -36,7 +36,6 @@ class User(db.Model):
 class Movie(db.Model):
     """Movie information."""
 
-
     __tablename__ = "movies"
 
     movie_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
@@ -50,10 +49,8 @@ class Movie(db.Model):
         return "<Movie_id={} title={}>".format(self.movie_id, self.title)
 
 
-
 class Rating(db.Model):
     """Rating information."""
-
 
     __tablename__ = "ratings"
 
@@ -62,11 +59,10 @@ class Rating(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
     score = db.Column(db.Integer, nullable=False)
 
-
     # Define relationship to user
     user = db.relationship("User",
                            backref=db.backref("ratings",
-                                               order_by=rating_id))
+                                              order_by=rating_id))
 
     # Define relationship to movie
     movie = db.relationship("Movie",
@@ -81,6 +77,7 @@ class Rating(db.Model):
 
 ##############################################################################
 # Helper functions
+
 
 def connect_to_db(app):
     """Connect the database to our Flask app."""

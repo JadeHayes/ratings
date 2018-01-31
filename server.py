@@ -35,20 +35,68 @@ def user_list():
     return render_template("user_list.html", users=users)
 
 
-@app.route('/register')
+@app.route('/register', methods=['GET'])
 def register_users():
     """Register users by email & password"""
 
     return render_template("register_form.html")
 
 
-# @app.route('/register', methods='POST')
-# def verify_user():
-#     """ Check if user is in our db, if not add them """
+@app.route('/register', methods=['POST'])
+def verify_user():
+    """ Check if user is in our db, if not add them """
 
-#     # user = request.form.get('')
-#     pass
-#     # return redirect("/")
+    email1 = request.form.get('email')
+    password = request.form.get('password')
+
+
+    user = db.session.query(User).filter(User.email == email1).first()
+
+    if not user:
+        new_user = User(email=email1, password=password)
+        db.session.add(new_user)
+        db.session.commit()
+        session['logged_in_user'] = new_user.user_id
+        flash("Sucessfully registered.")
+        return redirect("/")
+    else:
+        flash("User already exists.")
+        return redirect("/log-in")
+
+
+@app.route('/log-in', methods=['GET'])
+def log_in_users():
+    """Logging users in by email & password"""
+
+    return render_template("log_in.html")
+
+
+@app.route('/log-in', methods=['POST'])
+def checking_user():
+    """Checking user in db and log in"""
+
+    email1 = request.form.get('email')
+    password = request.form.get('password')
+
+    user = db.session.query(User).filter(User.email == email1).first()
+
+    if password == user.password:
+        session['logged_in_user'] = user.user_id
+        flash("Logged in")
+        return redirect("/")
+    else:
+        flash("Login failed")
+        return redirect("/log-in")
+
+
+@app.route('/log-out')
+def log_out_user():
+    """Log out user"""
+
+    del session['logged_in_user']
+    flash("Logged out")
+    return redirect("/")
+
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the
