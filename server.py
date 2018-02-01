@@ -125,7 +125,14 @@ def movie_ratings(movie_id):
     # user = db.session.query(User).filter(User.user_id == user_id).first()
     movie = Movie.query.get(movie_id)
 
-    return render_template("Movie_ratings.html", movie=movie)
+    return render_template("movie_ratings.html", movie=movie)
+
+
+@app.route('/add-rating', methods=['POST'])
+def add_rating():
+    """Adding rating."""
+
+    new_rating = request.form.get('rating')
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the
