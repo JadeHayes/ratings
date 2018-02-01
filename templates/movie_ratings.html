@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Movie Ratings</h2>
+
+{% if 'logged_in_user' in session %}
+    <form action="/add-rating" method="POST">
+        <input type='hidden' name='movie_id' value = '{{ movie.movie_id }}'>
+        Rate this movie: <input type="text" name ='rating'>
+        <input type='submit'>
+    </form>
+
+{% endif %}
+    <h3>{{ movie.title }}</h3>
+    {% for rating in movie.ratings %}
+        <li>{{ rating.score }} </li>
+    {% endfor %}
+
+
+</ul>
+{% endblock %}

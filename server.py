@@ -49,7 +49,6 @@ def verify_user():
     email1 = request.form.get('email')
     password = request.form.get('password')
 
-
     user = db.session.query(User).filter(User.email == email1).first()
 
     if not user:
@@ -80,20 +79,24 @@ def checking_user():
 
     user = db.session.query(User).filter(User.email == email1).first()
 
-    if password == user.password:
-        session['logged_in_user'] = user.user_id
-        flash("Logged in")
-        return redirect("/")
+    if user:
+        if password == user.password:
+            session['logged_in_user'] = user.user_id
+            flash("Logged in")
+            return redirect("/")
+        else:
+            flash("Login failed")
+            return redirect("/log-in")
     else:
-        flash("Login failed")
-        return redirect("/log-in")
+        flash("You are not yet registered")
+        return redirect("/register")
 
 
 @app.route('/log-out')
 def log_out_user():
     """Log out user"""
 
-    del session['logged_in_user']
+    session.clear()
     flash("Logged out")
     return redirect("/")
 
@@ -132,7 +135,23 @@ def movie_ratings(movie_id):
 def add_rating():
     """Adding rating."""
 
+    movie_id = request.form.get('movie_id')
     new_rating = request.form.get('rating')
+    user_id = session.get('logged_in_user')
+
+    rating = Rating.query.filter(Rating.user_id == user_id, Rating.movie_id == movie_id).first()
+
+    if rating:
+        rating.score = new_rating
+        db.session.commit()
+    else:
+        rating = Rating(movie_id=movie_id,
+                        user_id=user_id,
+                        score=new_rating)
+        db.session.add(rating)
+        db.session.commit()
+
+    return redirect('/movies/' + movie_id)
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the
